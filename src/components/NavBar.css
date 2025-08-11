@@ -1,0 +1,40 @@
+.navbar {
+    display: flex;
+    width: 100%;
+    height: 75vh;
+    background-image: url('/src/assets/navbar-image.png');
+    background-size: cover;
+    background-position: top;
+    border-bottom: white solid 1px;
+}
+
+.navbar-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10%;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-logo {
+    font-family: Sono;
+    margin: 0;
+    font-size: 8vw;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    text-wrap: wrap;
+    text-align: center;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+}
