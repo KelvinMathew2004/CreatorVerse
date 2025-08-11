@@ -176,97 +176,95 @@ const NewCreator = () => {
 
     return (
         <div className="NewPost">
-            <div className="form-container">
-                <form onSubmit={createPost}>
-                    <div className="form-group">
-                        <label>Focus *</label>
-                        <div className="category-selector">
-                            {categories.map((category) => (
-                                <button
-                                    key={category.name}
-                                    type="button"
-                                    className={`category-button ${category.colorClass} ${selectedCategory === category.name ? 'active' : 'inactive'}`}
-                                    onClick={() => setSelectedCategory(category.name)}
-                                    title={category.name}
-                                    disabled={!!linked_post_id}
-                                >
-                                    <span className="emoji" role="img" aria-label={category.name}>{category.emoji}</span>
-                                </button>
-                            ))}
-                        </div>
+            <form onSubmit={createPost}>
+                <div className="form-group">
+                    <label>Focus *</label>
+                    <div className="category-selector">
+                        {categories.map((category) => (
+                            <button
+                                key={category.name}
+                                type="button"
+                                className={`category-button ${category.colorClass} ${selectedCategory === category.name ? 'active' : 'inactive'}`}
+                                onClick={() => setSelectedCategory(category.name)}
+                                title={category.name}
+                                disabled={!!linked_post_id}
+                            >
+                                <span className="emoji" role="img" aria-label={category.name}>{category.emoji}</span>
+                            </button>
+                        ))}
                     </div>
-                    
+                </div>
+                
+                <div className="form-group">
+                    <label htmlFor="title">Session Name *</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={post.title}
+                        onChange={handleChange}
+                        placeholder="e.g., Morning Push Day"
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="description">Breakdown *</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        value={post.description}
+                        onChange={handleChange}
+                        placeholder="Share your sets, reps, and thoughts..."
+                        rows="6"
+                        required
+                    />
+                </div>
+                
+                {selectedCategory === 'Workouts' ? (
                     <div className="form-group">
-                        <label htmlFor="title">Session Name *</label>
+                        <label htmlFor="workout_name">Exercise Name *</label>
                         <input
                             type="text"
-                            id="title"
-                            name="title"
-                            value={post.title}
+                            id="workout_name"
+                            name="workout_name"
+                            value={post.workout_name}
                             onChange={handleChange}
-                            placeholder="e.g., Morning Push Day"
-                            required
+                            placeholder="e.g., Bench Press"
+                            required 
                         />
                     </div>
-
+                ) : (
                     <div className="form-group">
-                        <label htmlFor="description">Breakdown *</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            value={post.description}
-                            onChange={handleChange}
-                            placeholder="Share your sets, reps, and thoughts..."
-                            rows="6"
-                            required
-                        />
-                    </div>
-                    
-                    {selectedCategory === 'Workouts' ? (
-                        <div className="form-group">
-                            <label htmlFor="workout_name">Exercise Name *</label>
-                            <input
-                                type="text"
-                                id="workout_name"
-                                name="workout_name"
-                                value={post.workout_name}
-                                onChange={handleChange}
-                                placeholder="e.g., Bench Press"
-                                required 
-                            />
-                        </div>
-                    ) : (
-                        <div className="form-group">
-                            <label htmlFor="image_url">Image URL</label>
-                            <input
-                                type="text"
-                                id="image_url"
-                                name="image_url"
-                                value={post.image_url}
-                                onChange={handleChange}
-                                placeholder="https://example.com/image.png"
-                            />
-                        </div>
-                    )}
-
-                    <div className="form-group">
-                        <label htmlFor="password">Access Code *</label>
+                        <label htmlFor="image_url">Image URL</label>
                         <input
                             type="text"
-                            id="password"
-                            name="password"
-                            value={post.password}
+                            id="image_url"
+                            name="image_url"
+                            value={post.image_url}
                             onChange={handleChange}
-                            placeholder="Enter a password..."
-                            required
+                            placeholder="https://example.com/image.png"
                         />
                     </div>
+                )}
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Adding...' : 'Add to Log'}
-                    </button>
-                </form>
-            </div>
+                <div className="form-group">
+                    <label htmlFor="password">Access Code *</label>
+                    <input
+                        type="text"
+                        id="password"
+                        name="password"
+                        value={post.password}
+                        onChange={handleChange}
+                        placeholder="Enter a password..."
+                        required
+                    />
+                </div>
+
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Adding...' : 'Add to Log'}
+                </button>
+            </form>
         </div>
     );
 };

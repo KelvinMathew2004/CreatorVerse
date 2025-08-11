@@ -1,18 +1,24 @@
 .HomePage {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 4rem;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
     height: 100%;
-    background-color: #F2F2F2;
 }
 
 .post-gallery {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr; 
     gap: 1.5rem;
     width: 100%;
+}
+
+@media (min-width: 768px) {
+    .post-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .filter-controls {
@@ -31,9 +37,6 @@
 }
 
 .filter-button {
-    background-color: #e9ecef;
-    color: #757575;
-    border: 1px solid #ced4da;
     padding: 12px 24px;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -41,83 +44,8 @@
     transition: all 0.2s;
 }
 
-.filter-controls button:hover {
-    color: #000000;
-    background-color: #dee2e6;
-}
-
 .filter-controls button.active {
-    background-color: black;
-    color: white;
-    border-color: black;
     font-weight: bold;
-}
-
-.search-widget {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 42px;
-    overflow: hidden;
-
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
-    
-    width: 42px;
-
-    border-radius: 22px;
-    transition: width 0.4s ease-in-out, background-color 0.4s ease-in-out;
-}
-
-.search-widget.expanded {
-    width: 300px;
-    justify-content: flex-start;
-}
-
-
-.search-input {
-    flex-grow: 1;
-    height: 100%;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    font-size: 0.9rem;
-    color: #495057;
-    
-    width: 0;
-    padding: 0;
-    opacity: 0;
-    
-    transition: opacity 0.2s ease-in-out;
-}
-
-.search-widget.expanded .search-input {
-    opacity: 1;
-    padding: 0 10px 0 20px;
-}
-
-
-.search-toggle-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 44px;
-    height: 44px;
-    padding-left: 10px !important;
-    flex-shrink: 0;
-    border: none;
-    background-color: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.search-toggle-button svg {
-    stroke: #757575;
-    transition: all 0.2s ease-in-out;
-}
-
-.search-toggle-button:hover svg {
-    stroke: #000000;
 }
 
 @keyframes spin {

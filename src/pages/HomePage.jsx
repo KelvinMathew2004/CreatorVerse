@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../client';
 import Loading from '../assets/loading-icon.svg';
 import Card from '../components/Card';
-import Navbar from '../components/NavBar';
 import './HomePage.css';
 
 const LoadingSpinner = () => (
@@ -103,40 +102,26 @@ const HomePage = () => {
 
     return (
         <div className="HomePage">
-            <Navbar />
-            <main className="post-gallery">
-                <div className="filter-controls">
-                    <span>Flex by:</span>
-                    <button onClick={() => handleSortChange('created_at')} className={`filter-button ${sortBy === 'created_at' ? 'active' : ''}`}>
-                        Fresh Pumps
-                    </button>
-                    <button onClick={() => handleSortChange('likes')} className={`filter-button ${sortBy === 'likes' ? 'active' : ''}`}>
-                        Max Reps
-                    </button>
-                    <div className="filter-controls" style={{ margin: 0}}>
-                        <div
-                            className={`search-widget ${isSearchVisible ? 'expanded' : ''}`}
-                            ref={searchWidgetRef}
-                            onMouseLeave={handleMouseLeave}
-                            onBlur={handleBlur}
-                        >
-                            <input
-                                ref={inputRef}
-                                type="text"
-                                placeholder="Search by title..."
-                                className="search-input"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <button type="button" onClick={toggleSearch} className="search-toggle-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" />
-                                </svg>
-                            </button>
-                    </div>
-                    </div>
+            <div className="filter-controls">
+                <div style={{ margin: 0}}>
+                    <div
+                        className={`search-widget expanded`}
+                        ref={searchWidgetRef}
+                        onMouseLeave={handleMouseLeave}
+                        onBlur={handleBlur}
+                    >
+                        <input
+                            ref={inputRef}
+                            type="search"
+                            placeholder="Search by title..."
+                            className="search-input"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                 </div>
-                
+                </div>
+            </div>
+            <main className="post-gallery">
                 {loading ? (
                     <LoadingSpinner />
                 ) : posts.length > 0 ? (
@@ -144,7 +129,7 @@ const HomePage = () => {
                         <Card key={post.id} id={post.id} createdAt={post.created_at} title={post.title} likes={post.likes} image={post.image} category={post.category}/>
                     ))
                 ) : (
-                    <h2 style={{ color: 'gray', width: '100%', textAlign: 'center' }}>No posts found.</h2>
+                    <h2 style={{ width: '100%', textAlign: 'center' }}>No posts found.</h2>
                 )}
             </main>
         </div>

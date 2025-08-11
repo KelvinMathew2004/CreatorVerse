@@ -281,33 +281,6 @@ const CreatorDetails = () => {
                             </button>
                         </div>
                     </div>
-
-                    <div className="comments-section">
-                        <h3>Spotters ({comments.length})</h3>
-
-                        <form onSubmit={handleCommentSubmit} className="comment-form">
-                            <textarea
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                                placeholder="Add a comment..."
-                                rows="3"
-                            />
-                            <button type="submit">Drop a Spot</button>
-                        </form>
-
-                        <div className="comment-list">
-                            {comments.length > 0 ? (
-                                comments.map((comment) => (
-                                    <div key={comment.id} className="comment-item">
-                                        <p>{comment.comment_text}</p>
-                                        <span className="comment-meta">{timeAgo(comment.created_at)}</span>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No comments yet. Be the first!</p>
-                            )}
-                        </div>
-                    </div>
                 </div>
             )}
 

@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,9 +23,9 @@
 }
 
 .modal-content {
-    background-color: white;
     padding: 2rem;
     border-radius: 8px;
+    background-color: #181818;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 400px;
@@ -47,7 +47,6 @@
     background: none;
     border: none;
     font-size: 2rem;
-    color: #aaa;
     cursor: pointer;
     line-height: 1;
     padding: 0;
@@ -60,12 +59,10 @@
 .modal-content h2 {
     margin-top: 0;
     margin-bottom: 1rem;
-    color: #333;
 }
 
 .modal-content p {
     margin-bottom: 1.5rem;
-    color: #666;
 }
 
 .form-group {
@@ -76,44 +73,14 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #444;
 }
 
 .password-input {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
     box-sizing: border-box;
-}
-
-.password-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.submit-button {
-    width: 100%;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-    background-color: #0056b3;
-}
-
-.submit-button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
 }
 
 .incorrect-password {

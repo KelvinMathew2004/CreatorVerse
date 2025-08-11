@@ -184,96 +184,93 @@ const EditCreator = () => {
             {loading && !post.title ? (
                 <LoadingSpinner />
             ) : (
-                <div className="form-container">
-                    <h2>Edit Log</h2>
-                    <form onSubmit={updatePost}>
-                        {error && <div className="error-message">{error}</div>}
+                <form onSubmit={updatePost}>
+                    {error && <div className="error-message">{error}</div>}
 
-                        <div className="form-group">
-                            <label>Focus *</label>
-                            <div className="category-selector">
-                                {categories.map((category) => (
-                                    <button
-                                        key={category.name}
-                                        type="button"
-                                        className={`category-button ${category.colorClass} ${selectedCategory === category.name ? 'active' : 'inactive'}`}
-                                        onClick={() => setSelectedCategory(category.name)}
-                                        title={category.name}
-                                        disabled={post.repost}
-                                    >
-                                        <span className="emoji" role="img" aria-label={category.name}>{category.emoji}</span>
-                                    </button>
-                                ))}
-                            </div>
+                    <div className="form-group">
+                        <label>Focus *</label>
+                        <div className="category-selector">
+                            {categories.map((category) => (
+                                <button
+                                    key={category.name}
+                                    type="button"
+                                    className={`category-button ${category.colorClass} ${selectedCategory === category.name ? 'active' : 'inactive'}`}
+                                    onClick={() => setSelectedCategory(category.name)}
+                                    title={category.name}
+                                    disabled={post.repost}
+                                >
+                                    <span className="emoji" role="img" aria-label={category.name}>{category.emoji}</span>
+                                </button>
+                            ))}
                         </div>
-                        
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="title">Session Name *</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={post.title}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="description">Breakdown *</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={post.description}
+                            onChange={handleChange}
+                            rows="6"
+                            required
+                        />
+                    </div>
+
+                    {selectedCategory === 'Workouts' ? (
                         <div className="form-group">
-                            <label htmlFor="title">Session Name *</label>
+                            <label htmlFor="workout_name">Exercise Name *</label>
                             <input
                                 type="text"
-                                id="title"
-                                name="title"
-                                value={post.title}
+                                id="workout_name"
+                                name="workout_name"
+                                value={post.workout_name}
                                 onChange={handleChange}
-                                required
+                                placeholder="e.g., Bench Press"
                             />
                         </div>
-
+                    ) : (
                         <div className="form-group">
-                            <label htmlFor="description">Breakdown *</label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={post.description}
-                                onChange={handleChange}
-                                rows="6"
-                                required
-                            />
-                        </div>
-
-                        {selectedCategory === 'Workouts' ? (
-                            <div className="form-group">
-                                <label htmlFor="workout_name">Exercise Name *</label>
-                                <input
-                                    type="text"
-                                    id="workout_name"
-                                    name="workout_name"
-                                    value={post.workout_name}
-                                    onChange={handleChange}
-                                    placeholder="e.g., Bench Press"
-                                />
-                            </div>
-                        ) : (
-                            <div className="form-group">
-                                <label htmlFor="image">Image URL</label>
-                                <input
-                                    type="text"
-                                    id="image"
-                                    name="image"
-                                    value={post.image}
-                                    onChange={handleChange}
-                                    placeholder="Leave blank to generate new image from title"
-                                />
-                            </div>
-                        )}
-
-                        <div className="form-group">
-                            <label htmlFor="password">Access Code *</label>
+                            <label htmlFor="image">Image URL</label>
                             <input
                                 type="text"
-                                id="password"
-                                name="password"
-                                value={post.password}
+                                id="image"
+                                name="image"
+                                value={post.image}
                                 onChange={handleChange}
-                                required
+                                placeholder="Leave blank to generate new image from title"
                             />
                         </div>
+                    )}
 
-                        <button type="submit" disabled={loading}>
-                            {loading ? 'Updating...' : 'Update Log'}
-                        </button>
-                    </form>
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Access Code *</label>
+                        <input
+                            type="text"
+                            id="password"
+                            name="password"
+                            value={post.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Updating...' : 'Update Log'}
+                    </button>
+                </form>
             )}
         </div>
     );

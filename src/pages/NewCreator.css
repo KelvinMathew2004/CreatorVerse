@@ -17,7 +17,7 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 2.5rem;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -36,7 +36,6 @@ form {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #555;
 }
 
 .form-group input,
@@ -50,45 +49,11 @@ form {
     width: 100%;
 
     padding: 12px;
-    background-color: #f8f9fa;
-    color: #495057;
-    border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
     min-height: 50px;
     resize: vertical;
 }
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: whitesmoke;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-}
-
-button[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: black;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-button[type="submit"]:hover:not(:disabled) {
-    background-color: rgb(75, 75, 75);
-}
-
-button[type="submit"]:disabled {
-    background-color: #90989c;
-    cursor: not-allowed;
-}
-
 
 /* CATEGORIES STYLING */
 
