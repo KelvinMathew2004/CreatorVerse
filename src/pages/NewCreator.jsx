@@ -1,173 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../client';
-import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import './NewCreator.css';
 
-const categories = [
-    { name: 'Workouts', emoji: '🏋️', colorClass: 'workouts-options-color' },
-    { name: 'Nutrition', emoji: '🍎', colorClass: 'nutrition-options-color' },
-    { name: 'Progress', emoji: '📊', colorClass: 'progress-options-color' },
-    { name: 'Science', emoji: '🧪', colorClass: 'science-options-color' },
-    { name: 'General', emoji: '💬', colorClass: 'general-options-color' }
-];
-
-const cleanSearchTerm = (term) => {
-    const uselessTerms = ['exercise', 'workout', 'stretch', 'routine', 'training', 'male', 'female', 'on', 'in', 'with', 'and', 'arm', 'why', 'what', 'how', 'when'];
-    return term
-        .toLowerCase()
-        .split(' ')
-        .filter(word => !uselessTerms.includes(word))
-        .join(' ')
-        .trim();
-};
-
-const filterTitleForUnsplash = (rawQuery) => {
-    const unimportantWords = [
-        'a', 'an', 'the', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-        'that', 'this', 'these', 'those', 'of', 'in', 'on', 'for', 'to', 'from',
-        'with', 'about', 'into', 'onto', 'through', 'during', 'before', 'after',
-        'above', 'below', 'up', 'down', 'out', 'off', 'over', 'under', 'again',
-        'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how',
-        'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such',
-        'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very',
-        'can', 'will', 'just', 'don', 'should', 'now', 'i', 'you', 'he', 'she', 'it',
-        'we', 'they', 'me', 'him', 'her', 'them', 'my', 'your', 'his', 'its', 'our',
-        'their', 'mine', 'yours', 'ours', 'theirs', 'what', 'which', 'who', 'whom',
-        'whose', 'do', 'does', 'did', 'doing', 'have', 'has', 'had', 'having',
-        'because', 'if', 'or', 'and', 'but', 'as', 'at', 'by', 'between', 'among',
-        'via', 'yet', 'though', 'although', 'while', 'unless', 'until', 'even',
-        'ever', 'overrated', 'journey'
-    ];
-    const words = rawQuery.toLowerCase().split(' ');
-    const importantWords = words.filter(word => !unimportantWords.includes(word));
-    return importantWords.slice(0, 3).join(' ');
-};
-
-
 const NewCreator = () => {
-    const { id: linked_post_id } = useParams();
-    const [linked_post, setLinkedPost] = useState(null);
-    const [post, setPost] = useState({ title: "", description: "", image_url: "", password: "", workout_name: "" });
-    const [selectedCategory, setSelectedCategory] = useState(categories[0].name);
+    const [creator, setCreator] = useState({ 
+        name: "", 
+        description: "", 
+        imageURL: "", 
+        youtubeURL: "",
+        xURL: "",
+        instagramURL: "",
+        password: "", 
+    });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setPost((prev) => ({
+        setCreator((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-    useEffect(() => {
-        const fetchLinkedPostDetails = async () => {
-            if (!linked_post_id) return;
-            console.log('Attempting to fetch post with ID:', linked_post_id);
-
-            const { data, error } = await supabase
-                .from('Posts')
-                .select('*')
-                .eq('id', linked_post_id)
-                .single();
-
-            if (error) {
-                console.error('Error fetching linked post:', error);
-            } else {
-                console.log('Fetched data:', data);
-                setLinkedPost(data);
-                setSelectedCategory(data.category);
-            }
-        };
-
-        fetchLinkedPostDetails();
-    }, [linked_post_id]);
-
-    const createPost = async (event) => {
+    const createCreator = async (event) => {
         event.preventDefault();
         setLoading(true);
 
-        let imageUrl = post.image_url;
-
-        if (selectedCategory === 'Workouts') {
-            const apiKey = import.meta.env.VITE_X_RAPIDAPI_KEY;
-
-            if (!apiKey) {
-                alert("API Key is missing. Please check your .env.local file.");
-                setLoading(false);
-                return;
-            }
-
-            const searchTerm = cleanSearchTerm(post.workout_name);
-            const url = `https://exercisedb-api1.p.rapidapi.com/api/v1/exercises/search?search=${encodeURIComponent(searchTerm)}`;
-            const options = {
-                method: 'GET',
-                headers: {
-                    'x-rapidapi-key': apiKey,
-                    'x-rapidapi-host': 'exercisedb-api1.p.rapidapi.com'
-                }
-            };
-
-            try {
-                const response = await fetch(url, options);
-                const result = await response.json();
-                
-                if (result.success && result.data.length > 0) {
-                    imageUrl = result.data[0].imageUrl;
-                } else {
-                    imageUrl = 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-                }
-            } catch (error) {
-                console.error("API fetch error:", error);
-                imageUrl = 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-            }
-        } 
-
-        else if (!post.image_url && post.title) {
-            const unsplashApiKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
-
-            if (!unsplashApiKey) {
-                alert("Unsplash API Key is missing. Please check your .env.local file.");
-                setLoading(false);
-                return;
-            }
-
-            const cleanedQuery = filterTitleForUnsplash(post.title);
-            const unsplashUrl = `https://api.unsplash.com/photos/random?query=${encodeURIComponent(cleanedQuery)}&client_id=${unsplashApiKey}`;
-
-            try {
-                const response = await fetch(unsplashUrl);
-                if (!response.ok) throw new Error('Unsplash API request failed');
-                const data = await response.json();
-
-                if (data && data.urls && data.urls.regular) {
-                    imageUrl = data.urls.regular;
-                } else {
-                    imageUrl = 'https://images.unsplash.com/photo-1623874514711-0f321325f318?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-                }
-            } catch (error) {
-                console.error("Unsplash API fetch error:", error);
-                imageUrl = 'https://images.unsplash.com/photo-1623874514711-0f321325f318?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-            }
-        }
-
         const { error: supabaseError } = await supabase
-            .from('Posts')
+            .from('Creators')
             .insert({ 
-                title: post.title, 
-                description: post.description,
-                image: imageUrl,
-                category: selectedCategory,
-                password: post.password,
-                workout_name: post.workout_name,
-                linked_post_id: linked_post_id || null,
-                repost: linked_post_id ? true : false
+                name: creator.name, 
+                description: creator.description,
+                imageURL: creator.imageURL || null,
+                youtubeURL: creator.youtubeURL || null,
+                xURL: creator.xURL || null,
+                instagramURL: creator.instagramURL || null,
+                password: creator.password,
             });
 
         if (supabaseError) {
-            console.error("Error creating post:", supabaseError);
-            alert("Failed to create post. Please try again.");
+            console.error("Error creating creator:", supabaseError);
+            alert("Failed to create creator. Please try again.");
         } else {
             navigate(`/`);
         }
@@ -175,94 +50,125 @@ const NewCreator = () => {
     };
 
     return (
-        <div className="NewPost">
-            <form onSubmit={createPost}>
+        <div className="NewCreator">
+            <form onSubmit={createCreator}>
                 <div className="form-group">
-                    <label>Focus *</label>
-                    <div className="category-selector">
-                        {categories.map((category) => (
-                            <button
-                                key={category.name}
-                                type="button"
-                                className={`category-button ${category.colorClass} ${selectedCategory === category.name ? 'active' : 'inactive'}`}
-                                onClick={() => setSelectedCategory(category.name)}
-                                title={category.name}
-                                disabled={!!linked_post_id}
-                            >
-                                <span className="emoji" role="img" aria-label={category.name}>{category.emoji}</span>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                
-                <div className="form-group">
-                    <label htmlFor="title">Session Name *</label>
+                    <label htmlFor="name">Name *</label>
+                    <small><em>The name of the content creator.</em></small>
                     <input
                         type="text"
-                        id="title"
-                        name="title"
-                        value={post.title}
+                        id="name"
+                        name="name"
+                        value={creator.name}
                         onChange={handleChange}
-                        placeholder="e.g., Morning Push Day"
+                        placeholder="e.g., Marques Brownlee"
                         required
                     />
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="description">Breakdown *</label>
+                    <label htmlFor="description">Description *</label>
+                    <small><em>Provide a description of the creator. Who are they? What makes them interesting?</em></small>
                     <textarea
                         id="description"
                         name="description"
-                        value={post.description}
+                        value={creator.description}
                         onChange={handleChange}
-                        placeholder="Share your sets, reps, and thoughts..."
-                        rows="6"
+                        placeholder="Share something about this creator..."
+                        rows="4"
                         required
                     />
                 </div>
                 
-                {selectedCategory === 'Workouts' ? (
-                    <div className="form-group">
-                        <label htmlFor="workout_name">Exercise Name *</label>
-                        <input
-                            type="text"
-                            id="workout_name"
-                            name="workout_name"
-                            value={post.workout_name}
-                            onChange={handleChange}
-                            placeholder="e.g., Bench Press"
-                            required 
-                        />
-                    </div>
-                ) : (
-                    <div className="form-group">
-                        <label htmlFor="image_url">Image URL</label>
-                        <input
-                            type="text"
-                            id="image_url"
-                            name="image_url"
-                            value={post.image_url}
-                            onChange={handleChange}
-                            placeholder="https://example.com/image.png"
-                        />
-                    </div>
-                )}
-
                 <div className="form-group">
-                    <label htmlFor="password">Access Code *</label>
+                    <label htmlFor="imageURL">Image</label>
+                    <small><em>Provide a link to an image of your creator. Be sure to include the http://</em></small>
                     <input
                         type="text"
+                        id="imageURL"
+                        name="imageURL"
+                        value={creator.imageURL}
+                        onChange={handleChange}
+                        placeholder="https://example.com/image.png"
+                    />
+                </div>
+
+                <hr />
+                <h4>Social Media Links</h4>
+                <small><em>Provide at least one of the creator's social media links.</em></small>
+
+                <div className="form-group" style={{ marginTop: "2rem"}}>
+                    <label className="social-link-label" htmlFor="youtubeURL">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z" />
+                        </svg>
+                        YouTube
+                    </label>
+                    <small><em>The creator's YouTube handle (without the @)</em></small>
+                    <input
+                        type="text"
+                        id="youtubeURL"
+                        name="youtubeURL"
+                        value={creator.youtubeURL}
+                        onChange={handleChange}
+                        placeholder="e.g., mkbhd"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="social-link-label" htmlFor="xURL">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                        X (Twitter)
+                    </label>
+                    <small><em>The creator's X (Twitter) handle (without the @)</em></small>
+                    <input
+                        type="text"
+                        id="xURL"
+                        name="xURL"
+                        value={creator.xURL}
+                        onChange={handleChange}
+                        placeholder="e.g., MKBHD"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="social-link-label" htmlFor="instagramURL">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+                        </svg>
+                        Instagram
+                    </label>
+                    <small><em>The creator's Instagram handle (without the @)</em></small>
+                    <input
+                        type="text"
+                        id="instagramURL"
+                        name="instagramURL"
+                        value={creator.instagramURL}
+                        onChange={handleChange}
+                        placeholder="e.g., mkbhd"
+                    />
+                </div>
+
+                <hr />
+
+                <div className="form-group">
+                    <label htmlFor="password">Password *</label>
+                    <small><em>Required to edit or delete this entry later.</em></small>
+                    <input
+                        type="password"
                         id="password"
                         name="password"
-                        value={post.password}
+                        value={creator.password}
                         onChange={handleChange}
-                        placeholder="Enter a password..."
+                        placeholder="Create a password for editing"
                         required
                     />
                 </div>
 
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Adding...' : 'Add to Log'}
+                <button type="submit" disabled={loading} aria-busy={loading}>
+                    {loading ? 'Adding...' : 'Add Creator'}
                 </button>
             </form>
         </div>
