@@ -12,6 +12,24 @@ const LoadingSpinner = () => (
     </div>
 );
 
+const authErrorMessages = [
+    'Wrong locker code. Try another rep.',
+    'Invalid entry pass. Reset and retry.',
+    'That aint the right key, champ. Give it another push.',
+    'Access denied. You missed the lift. Try again.',
+    'Wrong rep key. Lock it in and go again.',
+    'That combo didn’t work. Tighten your form and retry.',
+    'Fail set. Check your code and give it another go.',
+    'Not strong enough this time. Reattempt your access code.',
+    'That rep didn’t count. Fix your form and try again.',
+    'You dropped the bar. Try a cleaner lift next time.',
+    'Code’s off balance. Reset your stance and go again.',
+    'Key mismatch. You’re racking the wrong plate.',
+    'Missed the cue. Focus and punch it in right.',
+    'Form check failed. Adjust your input and lift again.',
+    'That’s a no-rep. Enter the correct code to proceed.'
+];
+
 const HomePage = () => {
     const navigate = useNavigate();
     const [creators, setCreators] = useState([]);
@@ -19,34 +37,37 @@ const HomePage = () => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
+    const [selectedCreator, setSelectedCreator] = useState(null);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [authAction, setAuthAction] = useState(null);
     const [authError, setAuthError] = useState(null);
     const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
 
-    const handleEditClick = () => {
+    const handleEditClick = (creator) => {
+        setSelectedCreator(creator);
         setAuthAction('edit');
         setIsAuthModalOpen(true);
     };
 
-    const handleInfoClick = () => {
+    const handleInfoClick = (id) => {
         navigate(`/creator/${id}`);
     };
 
     const handleCloseAuthModal = () => {
         setIsAuthModalOpen(false);
         setAuthError(null);
+        setSelectedCreator(null);
     };
 
     const handleAuthSuccess = () => {
-        navigate(`/edit/${id}`, { state: { authenticated: true } });
+        navigate(`/edit/${selectedCreator.id}`, { state: { authenticated: true } });
     };
 
     const handleAuthSubmit = async (enteredPassword) => {
         setIsSubmittingAuth(true);
         setAuthError(null);
 
-        if (enteredPassword === password) {
+        if (enteredPassword === selectedCreator.password) {
             handleAuthSuccess();
         } else {
             const randomIndex = Math.floor(Math.random() * authErrorMessages.length);
@@ -101,7 +122,12 @@ const HomePage = () => {
                     <LoadingSpinner />
                 ) : creators.length > 0 ? (
                     creators.map((creator) => (
-                        <Card key={creator.id} id={creator.id} name={creator.name} description={creator.description} imageURL={creator.imageURL} youtubeURL={creator.youtubeURL} xURL={creator.xURL} instagramURL={creator.instagramURL}  onEdit={handleEditClick} onInfo={handleInfoClick}/>
+                        <Card 
+                            key={creator.id} 
+                            {...creator}
+                            onEdit={() => handleEditClick(creator)} 
+                            onInfo={() => handleInfoClick(creator.id)}
+                        />
                     ))
                 ) : (
                     <h2 style={{ width: '100%', textAlign: 'center' }}>No creators found.</h2>

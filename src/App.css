@@ -1,5 +1,4 @@
 h1, h2, h3 {
-  text-transform: uppercase;
   line-height: 1em;
 }
 
@@ -9,5 +8,6 @@ h1 {
 }
 
 .main-content {
-  margin-top: 4rem;
+  margin-top: 2rem;
+  padding: 2rem;
 }

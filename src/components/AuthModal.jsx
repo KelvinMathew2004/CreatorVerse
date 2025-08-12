@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './AuthModal.css';
 
-const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
+const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting, password }) => {
     const [enteredPassword, setEnteredPassword] = useState('');
-
+    
     useEffect(() => {
         if (isOpen) {
             setEnteredPassword('');
@@ -38,10 +38,9 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
             <article onClick={(e) => e.stopPropagation()}>
                 <header>
                     <button aria-label="Close" className="close" onClick={onClose}></button>
-                    <strong>Authentication Required</strong>
+                    <h3 style={{ marginBottom: "1rem" }}>Authentication Required</h3>
+                    <small>Please enter the password to proceed.</small>
                 </header>
-
-                <p>Please enter the password to proceed.</p>
 
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="password">Access Code</label>
@@ -49,15 +48,18 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
                         id="password"
                         type="password"
                         value={enteredPassword}
+                        name={error ? "invalid" : "valid"}
                         onChange={(e) => setEnteredPassword(e.target.value)}
                         required
                         placeholder="Enter password..."
                         autoFocus
+                        aria-invalid={error ? "true" : "false"}
+                        aria-describedby="valid-helper"
                     />
 
-                    {error && <p><small className="incorrect-password">{error}</small></p>}
+                    <small id="valid-helper">{error}</small>
 
-                    <button type="submit" aria-busy={isSubmitting}>
+                    <button type="submit" aria-busy={isSubmitting} disabled={isSubmitting}>
                         {isSubmitting ? 'Verifying...' : 'Submit'}
                     </button>
                 </form>
