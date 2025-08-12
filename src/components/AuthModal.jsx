@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './AuthModal.css';
 
 const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
-    const [password, setPassword] = useState('');
+    const [enteredPassword, setEnteredPassword] = useState('');
 
     useEffect(() => {
         if (isOpen) {
-            setPassword('');
+            setEnteredPassword('');
         }
     }, [isOpen]);
 
@@ -26,7 +26,7 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(password);
+        onSubmit(enteredPassword);
     };
 
     if (!isOpen) {
@@ -34,38 +34,35 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
     }
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="modal-close-button" onClick={onClose} aria-label="Close">
-                    &times;
-                </button>
-                
-                <h2>Authentication Required</h2>
+        <dialog open onClick={onClose}>
+            <article onClick={(e) => e.stopPropagation()}>
+                <header>
+                    <button aria-label="Close" className="close" onClick={onClose}></button>
+                    <strong>Authentication Required</strong>
+                </header>
+
                 <p>Please enter the password to proceed.</p>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="password">Access Code</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="password-input"
-                            placeholder="Enter password..."
-                            autoFocus
-                        />
-                    </div>
-                    
-                    {error && <p className="incorrect-password">{error}</p>}
-                    
-                    <button type="submit" className="submit-button" disabled={isSubmitting}>
-                        {isSubmitting ? 'Verifying...' : 'Lock It In'}
+                    <label htmlFor="password">Access Code</label>
+                    <input
+                        id="password"
+                        type="password"
+                        value={enteredPassword}
+                        onChange={(e) => setEnteredPassword(e.target.value)}
+                        required
+                        placeholder="Enter password..."
+                        autoFocus
+                    />
+
+                    {error && <p><small className="incorrect-password">{error}</small></p>}
+
+                    <button type="submit" aria-busy={isSubmitting}>
+                        {isSubmitting ? 'Verifying...' : 'Submit'}
                     </button>
                 </form>
-            </div>
-        </div>
+            </article>
+        </dialog>
     );
 };
 
