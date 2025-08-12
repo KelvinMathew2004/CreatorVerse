@@ -8,15 +8,15 @@
     height: 100%;
 }
 
-.post-gallery {
+.creator-gallery {
     display: grid;
     grid-template-columns: 1fr; 
     gap: 1.5rem;
-    width: 100%;
+    min-width: 100%;
 }
 
 @media (min-width: 768px) {
-    .post-gallery {
+    .creator-gallery {
         grid-template-columns: repeat(2, 1fr);
     }
 }

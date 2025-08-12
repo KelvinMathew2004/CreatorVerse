@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../client';
 import Loading from '../assets/loading-icon.svg';
 import Card from '../components/Card';
 import './HomePage.css';
+import AuthModal from '../components/AuthModal';
 
 const LoadingSpinner = () => (
     <div className="loading-icon-container">
@@ -10,91 +12,73 @@ const LoadingSpinner = () => (
     </div>
 );
 
-const categoryOptions = [
-    { value: 'All', label: 'All Categories' },
-    { value: 'Workouts', label: '🏋️ \u00A0 Workouts' },
-    { value: 'Nutrition', label: '🍎 \u00A0 Nutrition' },
-    { value: 'Progress', label: '📊 \u00A0 Progress' },
-    { value: 'Science', label: '🧪 \u00A0 Science' },
-    { value: 'General', label: '💬 \u00A0 General' }
-];
-
 const HomePage = () => {
-    const [posts, setPosts] = useState([]);
+    const navigate = useNavigate();
+    const [creators, setCreators] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sortBy, setSortBy] = useState('created_at');
-    const [filterCategory, setFilterCategory] = useState('All');
-    const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const inputRef = useRef(null);
-    const searchWidgetRef = useRef(null);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [authAction, setAuthAction] = useState(null);
+    const [authError, setAuthError] = useState(null);
+    const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
+
+    const handleEditClick = () => {
+        setAuthAction('edit');
+        setIsAuthModalOpen(true);
+    };
+
+    const handleInfoClick = () => {
+        navigate(`/creator/${id}`);
+    };
+
+    const handleCloseAuthModal = () => {
+        setIsAuthModalOpen(false);
+        setAuthError(null);
+    };
+
+    const handleAuthSuccess = () => {
+        navigate(`/edit/${id}`, { state: { authenticated: true } });
+    };
+
+    const handleAuthSubmit = async (enteredPassword) => {
+        setIsSubmittingAuth(true);
+        setAuthError(null);
+
+        if (enteredPassword === password) {
+            handleAuthSuccess();
+        } else {
+            const randomIndex = Math.floor(Math.random() * authErrorMessages.length);
+            setAuthError(authErrorMessages[randomIndex]);
+        }
+        setIsSubmittingAuth(false);
+    };
 
     useEffect(() => {
         setLoading(true);
         const timerId = setTimeout(() => {
-            const fetchPosts = async () => {
-                let query = supabase.from('Posts').select().order(sortBy, { ascending: false });
+            const fetchCreators = async () => {
+                let query = supabase.from('Creators').select().order('created_at', { ascending: false });
                 
                 if (searchQuery) {
-                    query = query.ilike('title', `%${searchQuery}%`);
-                }
-
-                if (filterCategory !== 'All') {
-                    query = query.eq('category', filterCategory);
+                    query = query.ilike('name', `%${searchQuery}%`);
                 }
 
                 const { data, error } = await query;
                 if (error) {
-                    setError("Could not fetch posts.");
-                    setPosts([]);
+                    setError("Could not fetch creators.");
+                    setCreators([]);
                 } else {
-                    setPosts(data);
+                    setCreators(data);
                     setError(null);
                 }
                 setLoading(false);
             };
-            fetchPosts();
+            fetchCreators();
         }, 300);
         return () => clearTimeout(timerId);
-    }, [searchQuery, sortBy, filterCategory]);
-
-    useEffect(() => {
-        if (isSearchVisible) {
-            inputRef.current?.focus();
-        }
-    }, [isSearchVisible]);
-
-    const handleSortChange = (newSortBy) => {
-        if (sortBy !== newSortBy) {
-            setSortBy(newSortBy);
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (document.activeElement !== inputRef.current) {
-            setIsSearchVisible(false);
-        }
-    };
-
-    const toggleSearch = (e) => {
-        e.preventDefault();
-        const nextVisibility = !isSearchVisible;
-        setIsSearchVisible(nextVisibility);
-        if (!nextVisibility) {
-            setSearchQuery("");
-        }
-    };
-
-    const handleBlur = () => {
-        setTimeout(() => {
-            if (searchWidgetRef.current && !searchWidgetRef.current.contains(document.activeElement)) {
-                setIsSearchVisible(false);
-            }
-        }, 100);
-    };
-
+    }, [searchQuery]);
 
     if (error) {
         return <p style={{ textAlign: 'center', marginTop: '5rem', color: "gray" }}>{error}</p>;
@@ -104,34 +88,32 @@ const HomePage = () => {
         <div className="HomePage">
             <div className="filter-controls">
                 <div style={{ margin: 0}}>
-                    <div
-                        className={`search-widget expanded`}
-                        ref={searchWidgetRef}
-                        onMouseLeave={handleMouseLeave}
-                        onBlur={handleBlur}
-                    >
-                        <input
-                            ref={inputRef}
-                            type="search"
-                            placeholder="Search by title..."
-                            className="search-input"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                </div>
+                    <input
+                        type="search"
+                        placeholder="Search by name..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
             </div>
-            <main className="post-gallery">
+            <main className="creator-gallery">
                 {loading ? (
                     <LoadingSpinner />
-                ) : posts.length > 0 ? (
-                    posts.map((post) => (
-                        <Card key={post.id} id={post.id} createdAt={post.created_at} title={post.title} likes={post.likes} image={post.image} category={post.category}/>
+                ) : creators.length > 0 ? (
+                    creators.map((creator) => (
+                        <Card key={creator.id} id={creator.id} name={creator.name} description={creator.description} imageURL={creator.imageURL} youtubeURL={creator.youtubeURL} xURL={creator.xURL} instagramURL={creator.instagramURL}  onEdit={handleEditClick} onInfo={handleInfoClick}/>
                     ))
                 ) : (
-                    <h2 style={{ width: '100%', textAlign: 'center' }}>No posts found.</h2>
+                    <h2 style={{ width: '100%', textAlign: 'center' }}>No creators found.</h2>
                 )}
             </main>
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={handleCloseAuthModal}
+                onSubmit={handleAuthSubmit}
+                error={authError}
+                isSubmitting={isSubmittingAuth}
+            />
         </div>
     );
 };
