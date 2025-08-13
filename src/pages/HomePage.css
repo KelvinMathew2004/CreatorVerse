@@ -3,6 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     padding-left: 10%;
     padding-right: 10%;
     height: 100%;
