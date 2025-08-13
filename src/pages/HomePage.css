@@ -15,6 +15,17 @@
     min-width: 100%;
 }
 
+.creator-gallery[aria-busy="true"] {
+  position: relative;
+}
+
+.creator-gallery[aria-busy="true"]::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 @media (min-width: 768px) {
     .creator-gallery {
         grid-template-columns: repeat(2, 1fr);

@@ -6,28 +6,8 @@ import Card from '../components/Card';
 import './HomePage.css';
 import AuthModal from '../components/AuthModal';
 
-const LoadingSpinner = () => (
-    <div className="loading-icon-container">
-        <img src={Loading} alt="Loading..." className="loading-icon" />
-    </div>
-);
-
 const authErrorMessages = [
-    'Wrong locker code. Try another rep.',
-    'Invalid entry pass. Reset and retry.',
-    'That aint the right key, champ. Give it another push.',
-    'Access denied. You missed the lift. Try again.',
-    'Wrong rep key. Lock it in and go again.',
-    'That combo didn’t work. Tighten your form and retry.',
-    'Fail set. Check your code and give it another go.',
-    'Not strong enough this time. Reattempt your access code.',
-    'That rep didn’t count. Fix your form and try again.',
-    'You dropped the bar. Try a cleaner lift next time.',
-    'Code’s off balance. Reset your stance and go again.',
-    'Key mismatch. You’re racking the wrong plate.',
-    'Missed the cue. Focus and punch it in right.',
-    'Form check failed. Adjust your input and lift again.',
-    'That’s a no-rep. Enter the correct code to proceed.'
+    'Incorrect password. Please try again.',
 ];
 
 const HomePage = () => {
@@ -117,20 +97,20 @@ const HomePage = () => {
                     />
                 </div>
             </div>
-            <main className="creator-gallery">
-                {loading ? (
-                    <LoadingSpinner />
-                ) : creators.length > 0 ? (
-                    creators.map((creator) => (
-                        <Card 
-                            key={creator.id} 
-                            {...creator}
-                            onEdit={() => handleEditClick(creator)} 
-                            onInfo={() => handleInfoClick(creator.id)}
-                        />
-                    ))
-                ) : (
-                    <h2 style={{ width: '100%', textAlign: 'center' }}>No creators found.</h2>
+            <main className="creator-gallery" aria-busy={loading}>
+                {!loading && (
+                    creators.length > 0 ? (
+                        creators.map((creator) => (
+                            <Card 
+                                key={creator.id} 
+                                {...creator}
+                                onEdit={() => handleEditClick(creator)} 
+                                onInfo={() => handleInfoClick(creator.id)}
+                            />
+                        ))
+                    ) : (
+                        <h2 style={{ width: '100%', textAlign: 'center' }}>No creators found.</h2>
+                    )
                 )}
             </main>
             <AuthModal

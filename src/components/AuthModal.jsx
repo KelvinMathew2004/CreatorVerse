@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './AuthModal.css';
 
-const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting, password }) => {
+const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
     const [enteredPassword, setEnteredPassword] = useState('');
-    
+
     useEffect(() => {
         if (isOpen) {
             setEnteredPassword('');
@@ -29,12 +29,8 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting, password })
         onSubmit(enteredPassword);
     };
 
-    if (!isOpen) {
-        return null;
-    }
-
     return (
-        <dialog open onClick={onClose}>
+        <dialog open={isOpen} onClick={onClose}>
             <article onClick={(e) => e.stopPropagation()}>
                 <header>
                     <button aria-label="Close" className="close" onClick={onClose}></button>
@@ -43,17 +39,17 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting, password })
                 </header>
 
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="password">Access Code</label>
+                    <label htmlFor="password">Password</label>
                     <input
                         id="password"
                         type="password"
                         value={enteredPassword}
-                        name={error ? "invalid" : "valid"}
+                        name={error ? "invalid" : ""}
                         onChange={(e) => setEnteredPassword(e.target.value)}
                         required
                         placeholder="Enter password..."
                         autoFocus
-                        aria-invalid={error ? "true" : "false"}
+                        aria-invalid={error ? "true" : ""}
                         aria-describedby="valid-helper"
                     />
 
