@@ -23,8 +23,10 @@ const EditCreator = () => {
     const pageRef = useRef(null);
 
     useEffect(() => {
-        pageRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [creator]);
+        if (!loading && creator) {
+            pageRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [loading]);
 
     useEffect(() => {
         if (!location.state?.authenticated) {
@@ -229,11 +231,11 @@ const EditCreator = () => {
                     <small>Required to save changes.</small>
                 </div>
                 
-                <div className="grid">
-                    <button type="button" className="secondary contrast" onClick={deleteCreator} disabled={loading}>
+                <div className="grid" style={{ marginTop: '2rem' }}>
+                    <button type="button" className="secondary contrast" onClick={deleteCreator} disabled={loading} style={{ margin: 0 }}>
                         Delete Creator
                     </button>
-                    <button type="submit" disabled={loading} aria-busy={loading}>
+                    <button type="submit" disabled={loading} aria-busy={loading} style={{ margin: 0 }}>
                         {loading ? 'Updating...' : 'Update Creator'}
                     </button>
                 </div>
