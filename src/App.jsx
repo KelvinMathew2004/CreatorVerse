@@ -2,6 +2,7 @@ import React from 'react';
 import { useRoutes } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/NavBar';
+import ColorPicker from './components/ColorPicker';
 import CreatorDetails from './pages/CreatorDetails';
 import EditCreator from './pages/EditCreator';
 import NewCreator from './pages/NewCreator';
@@ -31,6 +32,7 @@ const App = () => {
   return (
     <div className="App">
       <Navbar />
+      <ColorPicker />
       <main className="main-content">
         {element}
       </main>

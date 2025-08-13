@@ -1,9 +1,13 @@
 .Card {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px var(--pico-primary-background);
     background-size: cover;
     background-position: top;
     border-radius: 8px;
-    border: #e0e0e0 solid 1px;
+    border: var(--pico-primary-border) solid 3px;
+
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
 
     display: flex;
     text-decoration: none;
@@ -14,8 +18,9 @@
 }
 
 .Card:hover {
+    border: var(--pico-primary-hover-border) solid 3px;
     transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 15px var(--pico-primary-background);
 }
 
 .card-content {
@@ -23,8 +28,23 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-radius: 6.87px;
-    background: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    background-color: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+.card-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--pico-contrast-inverse);
+    opacity: 0.7;
+    border-radius: inherit; 
+    z-index: -1; 
 }
 
 .card-name {
@@ -45,7 +65,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 4rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     max-width: 100%;
 }
 
@@ -54,4 +74,32 @@
     align-items: center;
     gap: 0.75rem;
     font-weight: bold;
+}
+
+.edit-button svg,
+.details-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.social-link-youtube svg {
+  width: 40px;
+  height: 40px;
+}
+
+.social-link-x svg {
+  width: 30px;
+  height: 30px;
+}
+
+.social-link-instagram svg {
+  width: 30px;
+  height: 30px;
 }

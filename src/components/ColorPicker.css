@@ -15,7 +15,7 @@
 .color-swatch {
     flex-grow: 1;
     min-height: 0rem;
-    height: 0.5rem;
+    height: 1rem;
     padding: 0;
     border-radius: 0;
     border: none;

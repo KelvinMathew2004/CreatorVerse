@@ -3,8 +3,8 @@ import './ColorPicker.css';
 
 const ColorPicker = () => {
     const PICO_COLORS = [
-        'lime', 'green', 'jade', 'cyan', 'azure', 'blue', 'indigo', 'violet',
-        // 'grey','slate', 'zinc', 'sand',
+        'lime', 'green', 'jade', 'cyan', 'slate', 'azure', 'blue', 'indigo', 'violet',
+        // 'grey', 'zinc', 'sand',
         'purple', 'fuchsia', 'pink', 'red', 'orange', 'pumpkin', 'amber', 'yellow',
     ];
 
