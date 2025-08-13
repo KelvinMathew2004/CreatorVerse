@@ -3,10 +3,11 @@
     width: 100%;
     height: 75vh;
     background-image: url('/src/assets/navbar-image.png');
-    background-color: var(--pico-primary-background);
+    /* background-color: var(--pico-primary-background); */
+    background-color: black;
     background-size: cover;
     background-position: top;
-    border-bottom: var(--pico-primary-border) solid 1px;
+    margin-bottom: 5px;
 }
 
 .navbar-container {
@@ -27,7 +28,7 @@
     margin: 0;
     font-size: 8vw;
     color: white;
-    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 4px 4px 8px var(--pico-primary-background);
 }
 
 .nav-links {

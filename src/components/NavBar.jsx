@@ -9,10 +9,10 @@ const Navbar = () => {
                 <h1 className='navbar-logo'>CREATORVERSE</h1>
                 <div className="nav-links">
                     <NavLink to="/" role="button">
-                        VIEW ALL CREATORS
+                        View all creators
                     </NavLink>
                     <NavLink to="/new" role="button">
-                        ADD A CREATOR
+                        Add a creator
                     </NavLink>
                 </div>
             </div>
