@@ -1,296 +1,114 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { supabase } from '../client';
-import AuthModal from '../components/AuthModal';
-import Loading from '../assets/loading-icon.svg';
-import Card from '../components/Card';
 import './CreatorDetails.css';
 
-const authErrorMessages = [
-    'Wrong locker code. Try another rep.',
-    'Invalid entry pass. Reset and retry.',
-    'That aint the right key, champ. Give it another push.',
-    'Access denied. You missed the lift. Try again.',
-    'Wrong rep key. Lock it in and go again.',
-    'That combo didn’t work. Tighten your form and retry.',
-    'Fail set. Check your code and give it another go.',
-    'Not strong enough this time. Reattempt your access code.',
-    'That rep didn’t count. Fix your form and try again.',
-    'You dropped the bar. Try a cleaner lift next time.',
-    'Code’s off balance. Reset your stance and go again.',
-    'Key mismatch. You’re racking the wrong plate.',
-    'Missed the cue. Focus and punch it in right.',
-    'Form check failed. Adjust your input and lift again.',
-    'That’s a no-rep. Enter the correct code to proceed.'
-];
-
-const categories = [
-    { name: 'Workouts', emoji: '🏋️' },
-    { name: 'Nutrition', emoji: '🍎' },
-    { name: 'Progress', emoji: '📊' },
-    { name: 'Science', emoji: '🧪' },
-    { name: 'General', emoji: '💬' },
-    { name: 'Repost', emoji: '' }
-];
-
-const timeAgo = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.round((now - date) / 1000);
-    const minutes = Math.round(seconds / 60);
-    const hours = Math.round(minutes / 60);
-    const days = Math.round(hours / 24);
-    const weeks = Math.round(days / 7);
-
-    if (seconds == 1) return `${seconds} second ago`;
-    if (seconds < 60) return `${seconds} seconds ago`;
-    if (minutes == 1) return `${minutes} minute ago`;
-    if (minutes < 60) return `${minutes} minutes ago`;
-    if (hours == 1) return `${hours} hour ago`
-    if (hours < 24) return `${hours} hours ago`;
-    if (days == 1) return `${days} day ago`;
-    if (days < 7) return `${days} days ago`;
-    if (weeks == 1) return `${weeks} week ago`;
-    return `${weeks} weeks ago`;
-};
-
-const LoadingSpinner = () => (
-    <div className="loading-icon-container">
-        <img src={Loading} alt="Loading..." className="details-loading-icon" />
-    </div>
+const YouTubeIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M21.582,6.186c-0.23-0.86-0.908-1.538-1.768-1.768C18.254,4,12,4,12,4S5.746,4,4.186,4.418 c-0.86,0.23-1.538,0.908-1.768,1.768C2,7.746,2,12,2,12s0,4.254,0.418,5.814c0.23,0.86,0.908,1.538,1.768,1.768 C5.746,20,12,20,12,20s6.254,0,7.814-0.418c0.861-0.23,1.538-0.908,1.768-1.768C22,16.254,22,12,22,12S22,7.746,21.582,6.186z M10,15.464V8.536L16,12L10,15.464z" /></svg>
+);
+const XIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+);
+const InstagramIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-1.625C8.724.538 8.347.527 7.033.589 3.652.734.926 3.46.784 6.845.722 8.158.712 8.536.712 12s.01 3.842.072 5.155c.142 3.385 2.868 6.111 6.253 6.253C8.347 23.473 8.724 23.462 12 23.462s3.653.011 4.967-.052c3.385-.142 6.111-2.868 6.253-6.253.062-1.313.072-1.69.072-5.155s-.01-3.842-.072-5.155C23.074 3.46 20.348.734 16.963.589 15.653.527 15.276.538 12 .538z" /><path d="M12 6.848c-2.834 0-5.152 2.318-5.152 5.152s2.318 5.152 5.152 5.152 5.152-2.318 5.152-5.152S14.834 6.848 12 6.848zm0 8.704c-1.96 0-3.552-1.592-3.552-3.552s1.592-3.552 3.552-3.552 3.552 1.592 3.552 3.552-1.592 3.552-3.552 3.552z" /><path d="M16.965 5.595a1.44 1.44 0 1 1 0 2.88 1.44 1.44 0 0 1 0-2.88z" /></svg>
 );
 
 const CreatorDetails = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [post, setPost] = useState(null);
-    const [categoryEmoji, setCategoryEmoji] = useState('');
-    const [linked_post_id, setLinkedPostId] = useState(null);
-    const [linked_post, setLinkedPost] = useState(null);
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState("");
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-    const [authAction, setAuthAction] = useState(null);
-    const [authError, setAuthError] = useState(null);
-    const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
+    const [creator, setCreator] = useState(null);
+    const [error, setError] = useState(null);
+
+    const pageRef = useRef(null);
 
     useEffect(() => {
-        const fetchAllPostData = async () => {
-            setLoading(true);
+        pageRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [creator]);
 
-            const { data: postData, error: postError } = await supabase
-                .from('Posts')
-                .select(`*, Comments (*)`)
+    useEffect(() => {
+        const fetchCreatorData = async () => {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('Creators')
+                .select('*')
                 .eq('id', id)
-                .order('created_at', { foreignTable: 'Comments', ascending: false })
                 .single();
 
-            if (postError) {
-                console.error('Error fetching main post:', postError);
-                setPost(null);
-                setLoading(false);
-                return;
+            if (error) {
+                console.error('Error fetching creator:', error);
+                setError('Could not find the requested creator.');
+            } else {
+                setCreator(data);
             }
-
-            setPost(postData);
-            setComments(postData.Comments || []);
-
-            const matchedCategory = categories.find(c => c.name === postData.category);
-            setCategoryEmoji(matchedCategory?.emoji || '');
-
-            if (postData.repost && postData.linked_post_id) {
-                const { data: linkedData, error: linkedError } = await supabase
-                    .from('Posts')
-                    .select('*')
-                    .eq('id', postData.linked_post_id)
-                    .single();
-
-                if (linkedError) {
-                    console.error('Error fetching linked post:', linkedError);
-                    setLinkedPost(null);
-                } else {
-                    setLinkedPost(linkedData);
-                }
-            }
-
             setLoading(false);
         };
 
-        fetchAllPostData();
+        fetchCreatorData();
     }, [id]);
 
-    const handleLike = async () => {
-        const newLikeCount = (post.likes || 0) + 1;
-        setPost({ ...post, likes: newLikeCount });
-        await supabase
-            .from('Posts')
-            .update({ likes: newLikeCount })
-            .eq('id', id);
-    };
+    if (loading) {
+        return (
+            <div className="CreatorDetailsPage" aria-busy="true">
+                {/* This container is empty, so the ::before spinner will be visible */}
+            </div>
+        );
+    }
 
-    const handleCommentSubmit = async (event) => {
-        event.preventDefault();
-        if (newComment.trim() === '') return;
-
-        const { data: createdComment, error } = await supabase
-            .from('Comments')
-            .insert({ post_id: id, comment_text: newComment })
-            .select()
-            .single();
-
-        if (error) {
-            console.error('Error creating comment:', error);
-        } else if (createdComment) {
-            setComments([createdComment, ...comments]);
-            setNewComment("");
-        }
-    };
-
-    const handleEditClick = () => {
-        setAuthAction('edit');
-        setIsAuthModalOpen(true);
-    };
-
-    const handleDeleteClick = () => {
-        setAuthAction('delete');
-        setIsAuthModalOpen(true);
-    };
-
-    const handleCloseAuthModal = () => {
-        setIsAuthModalOpen(false);
-        setAuthError(null);
-    };
-
-    const handleAuthSuccess = () => {
-        if (authAction === 'edit') {
-            navigate(`/edit/${id}`, { state: { authenticated: true } });
-        } else if (authAction === 'delete') {
-            deletePost();
-        }
-    };
-
-    const handleAuthSubmit = async (password) => {
-        setIsSubmittingAuth(true);
-        setAuthError(null);
-
-        if (password === post?.password) {
-            handleAuthSuccess();
-        } else {
-            const randomIndex = Math.floor(Math.random() * authErrorMessages.length);
-            setAuthError(authErrorMessages[randomIndex]);
-        }
-        setIsSubmittingAuth(false);
-    };
-
-    const deletePost = async () => {
-        const { error } = await supabase
-            .from('Posts')
-            .delete()
-            .eq('id', id);
-
-        if (error) {
-            console.error('Failed to delete the post:', error);
-            setAuthError('Failed to delete the post.');
-        } else {
-            navigate('/');
-        }
-        setIsAuthModalOpen(false);
-    };
-
-    if (!post && !loading) return <p className="error-message">Post not found.</p>;
+    if (error || !creator) {
+        return <p className="error-message">{error || 'Creator not found.'}</p>;
+    }
 
     return (
-        <div className="PostDetailsPage">
-            {loading ? (
-                <LoadingSpinner />
-            ) : (
-                <div className="post-container">
-                    {categoryEmoji && (
-                        <div className="card-details-category-icon" title={post.category}>
-                            {categoryEmoji}
-                        </div>
-                    )}
+        <div className="CreatorDetailsPage" ref={pageRef}>
+            <article className='creator-container'>
+                {creator.imageURL && (
+                    <img src={creator.imageURL} alt={creator.name} className="creator-image-fit"/>
+                )}
+                <div className='creator-content'>
+                    <h1 className="creator-name">{creator.name}</h1>
+                    <p className="creator-description">{creator.description}</p>
+                    <div className="creator-socials">
+                        {creator.youtubeURL && (
+                        <a
+                            href={`https://youtube.com/${creator.youtubeURL}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link"
+                            title="YouTube"
+                        >
+                            <YouTubeIcon />
+                            @{creator.youtubeURL}
+                        </a>
+                        )}
 
-                    <p className="post-meta">Logged {timeAgo(post.created_at)}</p>
+                        {creator.xURL && (
+                        <a
+                            href={`https://x.com/${creator.xURL}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link"
+                            title="X (Twitter)"
+                        >
+                            <XIcon />
+                            @{creator.xURL}
+                        </a>
+                        )}
 
-                    <h1 className="post-title">{post.title}</h1>
-
-                    <p className="post-content">{post.description}</p>
-
-                    {post.image && (
-                        <div className="post-image-container">
-                            <img src={post.image} alt={post.title} className="post-image-fit"/>
-                        </div>
-                    )}
-
-                    {post.repost && (
-                        linked_post ? (
-                            <Card
-                                id={linked_post.id}
-                                createdAt={linked_post.created_at}
-                                title={linked_post.title}
-                                likes={linked_post.likes}
-                                image={linked_post.image}
-                                category={"Repost"}
-                            />
-                        ) : (
-                            <p className="deleted-linked-post-card" >
-                                ↩ Original post has been deleted.
-                            </p>
-                        )
-                    )}
-
-                    <div className="post-actions-row">
-                        <div className="post-actions">
-                            <button onClick={handleLike} className="like-button">
-                                <i class="fa-solid fa-thumbs-up"
-                                    style={{ 
-                                        color: '#FF8B60', 
-                                        verticalAlign: 'middle' 
-                                    }}
-                                    aria-hidden="true"
-                                ></i>
-                            </button>
-                            <span>{post.likes || 0} {post.likes === 1 ? 'gain' : 'gains'}</span>
-                        </div>
-                        <div className="post-actions">
-                            <button onClick={() => navigate(`/new/${id}`)} className="repost-button" title='Repost'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
-                                    <path d="M3 2v6h6" />
-                                    <path d="M21 12A9 9 0 0 0 6 5.3L3 8" />
-                                    <path d="M21 22v-6h-6" />
-                                    <path d="M3 12a9 9 0 0 0 15 6.7l3-2.7" />
-                                </svg>
-                            </button>
-                            <button onClick={handleEditClick} className="edit-button" title='Edit'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M12 20h9" />
-                                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                                </svg>
-                            </button>
-                            <button onClick={handleDeleteClick} className="delete-button" title='Delete'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polyline points="3 6 5 6 21 6" />
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                    <path d="M10 11v6" />
-                                    <path d="M14 11v6" />
-                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                                </svg>
-                            </button>
-                        </div>
+                        {creator.instagramURL && (
+                        <a
+                            href={`https://instagram.com/${creator.instagramURL}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="social-link"
+                            title="Instagram"
+                        >
+                            <InstagramIcon />
+                            @{creator.instagramURL}
+                        </a>
+                        )}
                     </div>
                 </div>
-            )}
-
-            <AuthModal
-                isOpen={isAuthModalOpen}
-                onClose={handleCloseAuthModal}
-                onSubmit={handleAuthSubmit}
-                error={authError}
-                isSubmitting={isSubmittingAuth}
-            />
+            </article>
         </div>
     );
 };

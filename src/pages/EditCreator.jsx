@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../client';
 import './NewCreator.css';
@@ -19,6 +19,12 @@ const EditCreator = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const pageRef = useRef(null);
+
+    useEffect(() => {
+        pageRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [creator]);
 
     useEffect(() => {
         if (!location.state?.authenticated) {
@@ -107,8 +113,12 @@ const EditCreator = () => {
         }
     };
 
-    if (loading && !creator.name) {
-        return <p>Loading creator data...</p>;
+    if (loading) {
+        return (
+            <div className="NewCreator" aria-busy="true">
+                {/* This container is empty, so the ::before spinner will be visible */}
+            </div>
+        );
     }
 
     if (error) {
@@ -116,7 +126,7 @@ const EditCreator = () => {
     }
 
     return (
-        <div className="NewCreator"> 
+        <div className="NewCreator" aria-busy={loading} ref={pageRef}> 
             <form onSubmit={updateCreator}>
                 <div className="form-group">
                     <label htmlFor="name">Name *</label>
@@ -220,11 +230,11 @@ const EditCreator = () => {
                 </div>
                 
                 <div className="grid">
-                    <button type="submit" disabled={loading} aria-busy={loading}>
-                        {loading ? 'Updating...' : 'Update Creator'}
-                    </button>
                     <button type="button" className="secondary contrast" onClick={deleteCreator} disabled={loading}>
                         Delete Creator
+                    </button>
+                    <button type="submit" disabled={loading} aria-busy={loading}>
+                        {loading ? 'Updating...' : 'Update Creator'}
                     </button>
                 </div>
             </form>

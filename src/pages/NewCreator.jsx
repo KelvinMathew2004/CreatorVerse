@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../client';
 import { useNavigate } from 'react-router-dom';
 import './NewCreator.css';
@@ -15,6 +15,12 @@ const NewCreator = () => {
     });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    const formRef = useRef(null);
+
+    useEffect(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, []);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -50,7 +56,7 @@ const NewCreator = () => {
     };
 
     return (
-        <div className="NewCreator">
+        <div className="NewCreator" ref={formRef}>
             <form onSubmit={createCreator}>
                 <div className="form-group">
                     <label htmlFor="name">Name *</label>
