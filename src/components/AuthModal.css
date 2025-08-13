@@ -1,0 +1,15 @@
+.modal-content {
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-form button {
+    margin: 0;
+    font-weight: bold;
+}

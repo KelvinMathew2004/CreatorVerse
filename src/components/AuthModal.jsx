@@ -30,15 +30,15 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
     };
 
     return (
-        <dialog open={isOpen} onClick={onClose}>
-            <article onClick={(e) => e.stopPropagation()}>
+        <dialog open={isOpen} onClick={onClose} className="auth-modal">
+            <article onClick={(e) => e.stopPropagation()} className='modal-content'>
                 <header>
                     <button aria-label="Close" className="close" onClick={onClose}></button>
                     <h3 style={{ marginBottom: "1rem" }}>Authentication Required</h3>
                     <small>Please enter the password to proceed.</small>
                 </header>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='modal-form'>
                     <label htmlFor="password">Password</label>
                     <input
                         id="password"
@@ -51,6 +51,7 @@ const AuthModal = ({ isOpen, onClose, onSubmit, error, isSubmitting }) => {
                         autoFocus
                         aria-invalid={error ? "true" : ""}
                         aria-describedby="valid-helper"
+                        autoComplete="current-password"
                     />
 
                     <small id="valid-helper">{error}</small>

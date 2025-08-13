@@ -173,7 +173,7 @@ const NewCreator = () => {
                     />
                 </div>
 
-                <button type="submit" disabled={loading} aria-busy={loading}>
+                <button type="submit" disabled={loading} aria-busy={loading} style={{ margin: 0 }}>
                     {loading ? 'Adding...' : 'Add Creator'}
                 </button>
             </form>
