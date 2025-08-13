@@ -12,7 +12,14 @@ const Card = ({ id, name, description, imageURL, youtubeURL, xURL, instagramURL,
         <div className='Card' style={cardStyle}>
             <div className="card-content">
                 <div className="creator-actions-row">
-                    <h2 className="card-name">{name}</h2>
+                    <h2 className="card-name">
+                        {name.split(" ").map((word, i) => (
+                            <span key={i}>
+                            {word}
+                            <br />
+                            </span>
+                        ))}
+                    </h2>
                     <div className="creator-actions">
                         <a onClick={() => onEdit(password)} className="edit-button" title='Edit'>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -56,7 +63,7 @@ const Card = ({ id, name, description, imageURL, youtubeURL, xURL, instagramURL,
                         )}
                     </div>
                 </div>
-                <p className="card-description">{description}</p>
+                <small className="card-description">{description}</small>
             </div>
         </div>
     );

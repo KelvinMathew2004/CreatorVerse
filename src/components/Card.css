@@ -27,6 +27,7 @@
     padding: 2rem;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     width: 100%;
     border-radius: 4px;
     background-color: transparent;
@@ -50,6 +51,7 @@
 
 .card-name {
     margin: 0 0 0rem 0;
+    max-width: 40%;
     text-wrap: balance;
     text-transform: capitalize;
 }
@@ -57,7 +59,6 @@
 .card-description {
     margin: 0;
     line-height: 1.3;
-    text-wrap: balance;
 }
 
 .creator-actions-row {
