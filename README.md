@@ -1,12 +1,58 @@
-# React + Vite
+# WEB103 Prework - *CreatorVerse*
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Submitted by: **Kelvin Mathew**
 
-Currently, two official plugins are available:
+About this web app: **CreatorVerse is a React web app that showcases curated content creators across platforms. Users can browse profiles, view details, and manage creators through an intuitive, PicoCSS-styled interface with pseudo-authentication, a custom color picker, search, and smooth navigation.**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Time spent: **12** hours
 
-## Expanding the ESLint configuration
+## Required Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The following **required** functionality is completed:
+
+- [x] **A logical component structure in React is used to create the frontend of the app**
+- [x] **At least five content creators are displayed on the homepage of the app**
+- [x] **Each content creator item includes their name, a link to their channel/page, and a short description of their content**
+- [x] **API calls use the async/await design pattern via Axios or fetch()**
+- [x] **Clicking on a content creator item takes the user to their details page, which includes their name, url, and description**
+- [x] **Each content creator has their own unique URL**
+- [x] **The user can edit a content creator to change their name, url, or description**
+- [x] **The user can delete a content creator**
+- [x] **The user can add a new content creator by entering a name, url, or description and then it is displayed on the homepage**
+
+The following **optional** features are implemented:
+
+- [x] Picocss is used to style HTML elements
+- [x] The content creator items are displayed in a creative format, like cards instead of a list
+- [x] An image of each content creator is shown on their content creator card
+
+The following **additional** features are implemented:
+
+* [x] Used mapping to break the names into lines for the creators' faces to be highlighted
+* [x] Added browser favicon and site name
+* [x] Added a color picker bar that matches the hero image and adjusts the site's Pico CSS styling accordingly
+* [x] Implemented scrollIntoView for easier navigation
+* [x] Added pseudo-authentication for the ability to edit and delete creators
+* [x] Added basic search functionality to filter through creators using their names
+
+## Video Walkthrough
+
+Here's a walkthrough of implemented required features:
+
+👉🏿<img src='./Walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+GIF created with [Kap](https://getkap.co/) for macOS
+
+## Notes
+
+The Edit and Delete buttons were scattered across pages so passing the right data as props for the authentication modal was bit confusing.
+
+## License
+
+Copyright [2025] [Kelvin Mathew]
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+> http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
