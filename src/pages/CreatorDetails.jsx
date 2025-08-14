@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../client';
 import './CreatorDetails.css';
@@ -13,6 +13,10 @@ const XIcon = () => (
 const InstagramIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-1.625C8.724.538 8.347.527 7.033.589 3.652.734.926 3.46.784 6.845.722 8.158.712 8.536.712 12s.01 3.842.072 5.155c.142 3.385 2.868 6.111 6.253 6.253C8.347 23.473 8.724 23.462 12 23.462s3.653.011 4.967-.052c3.385-.142 6.111-2.868 6.253-6.253.062-1.313.072-1.69.072-5.155s-.01-3.842-.072-5.155C23.074 3.46 20.348.734 16.963.589 15.653.527 15.276.538 12 .538z" /><path d="M12 6.848c-2.834 0-5.152 2.318-5.152 5.152s2.318 5.152 5.152 5.152 5.152-2.318 5.152-5.152S14.834 6.848 12 6.848zm0 8.704c-1.96 0-3.552-1.592-3.552-3.552s1.592-3.552 3.552-3.552 3.552 1.592 3.552 3.552-1.592 3.552-3.552 3.552z" /><path d="M16.965 5.595a1.44 1.44 0 1 1 0 2.88 1.44 1.44 0 0 1 0-2.88z" /></svg>
 );
+
+const authErrorMessages = [
+    'Incorrect password. Please try again.',
+];
 
 const CreatorDetails = () => {
     const { id } = useParams();
@@ -72,7 +76,7 @@ const CreatorDetails = () => {
         if (authAction === 'edit') {
             navigate(`/edit/${id}`, { state: { authenticated: true } });
         } else if (authAction === 'delete') {
-            deletePost();
+            deleteCreator();
         }
     };
 
@@ -89,17 +93,22 @@ const CreatorDetails = () => {
         setIsSubmittingAuth(false);
     };
 
-    const deletePost = async () => {
+    const deleteCreator = async () => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this creator? This action cannot be undone.");
+        if (!isConfirmed) return;
+
+        setLoading(true);
         const { error } = await supabase
-            .from('Posts')
+            .from('Creators')
             .delete()
             .eq('id', id);
 
+        setLoading(false);
         if (error) {
             console.error('Failed to delete the post:', error);
             setAuthError('Failed to delete the post.');
         } else {
-            navigate('/');
+            navigate('/', { state: { fromNavigation: true } });
         }
         setIsAuthModalOpen(false);
     };

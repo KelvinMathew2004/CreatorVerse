@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../client';
 import { useNavigate } from 'react-router-dom';
 import './NewCreator.css';
@@ -50,7 +50,7 @@ const NewCreator = () => {
             console.error("Error creating creator:", supabaseError);
             alert("Failed to create creator. Please try again.");
         } else {
-            navigate(`/`);
+            navigate('/', { state: { fromNavigation: true } });
         }
         setLoading(false);
     };
