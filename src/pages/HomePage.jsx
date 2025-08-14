@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useNavigationType } from 'react-router-dom';
 import { supabase } from '../client';
-import Loading from '../assets/loading-icon.svg';
 import Card from '../components/Card';
 import './HomePage.css';
 import AuthModal from '../components/AuthModal';
@@ -12,6 +11,10 @@ const authErrorMessages = [
 
 const HomePage = () => {
     const navigate = useNavigate();
+    const navigationType = useNavigationType();
+    const homeRef = useRef(null);
+    const didScroll = useRef(false);
+
     const [creators, setCreators] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,13 +22,23 @@ const HomePage = () => {
 
     const [selectedCreator, setSelectedCreator] = useState(null);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-    const [authAction, setAuthAction] = useState(null);
     const [authError, setAuthError] = useState(null);
     const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
 
+    useEffect(() => {
+    const cameFromAnotherRoute = navigationType !== 'POP';
+        if (!cameFromAnotherRoute || didScroll.current) return;
+
+        if (!loading && homeRef.current) {
+            didScroll.current = true;
+            requestAnimationFrame(() => {
+                homeRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }
+    }, [navigationType, loading]);
+
     const handleEditClick = (creator) => {
         setSelectedCreator(creator);
-        setAuthAction('edit');
         setIsAuthModalOpen(true);
     };
 
@@ -86,7 +99,7 @@ const HomePage = () => {
     }
 
     return (
-        <div className="HomePage">
+        <div className="HomePage" ref={homeRef}>
             <div className="filter-controls">
                 <div style={{ margin: 0}}>
                     <input

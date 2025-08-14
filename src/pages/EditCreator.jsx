@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../client';
 import './NewCreator.css';
@@ -31,7 +31,7 @@ const EditCreator = () => {
     useEffect(() => {
         if (!location.state?.authenticated) {
             alert("Authentication required to edit.");
-            navigate(`/`);
+            navigate('/', { state: { fromNavigation: true } });
             return;
         }
 
@@ -90,7 +90,7 @@ const EditCreator = () => {
             setError('Failed to update the creator.');
             console.error(updateError);
         } else {
-            navigate(`/`);
+            navigate('/', { state: { fromNavigation: true } });
         }
         setLoading(false);
     };
@@ -111,7 +111,7 @@ const EditCreator = () => {
             console.error(error);
         } else {
             alert("Creator deleted successfully.");
-            navigate('/');
+            navigate('/', { state: { fromNavigation: true } });
         }
     };
 
