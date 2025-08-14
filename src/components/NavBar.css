@@ -27,7 +27,7 @@
     text-transform: uppercase;
     margin: 0;
     font-size: 8vw;
-    color: white;
+    color: #f0f1f3;
     text-shadow: 4px 4px 8px var(--pico-primary-background);
 }
 

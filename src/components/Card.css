@@ -29,6 +29,7 @@
     flex-direction: column;
     justify-content: center;
     width: 100%;
+    height: 100%;
     border-radius: 4px;
     background-color: transparent;
     position: relative;
@@ -51,7 +52,6 @@
 
 .card-name {
     margin: 0 0 0rem 0;
-    max-width: 40%;
     text-wrap: balance;
     text-transform: capitalize;
 }
@@ -66,7 +66,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 4rem;
+    gap: 1rem;
     margin-bottom: 1rem;
     max-width: 100%;
 }
@@ -74,7 +74,7 @@
 .creator-actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     font-weight: bold;
 }
 
@@ -88,7 +88,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .social-link-youtube svg {
@@ -104,4 +104,8 @@
 .social-link-instagram svg {
   width: 30px;
   height: 30px;
+}
+
+.card-description {
+    margin-top: 0.5rem;
 }
